@@ -38,6 +38,5 @@ public class PlanetController {
        return planetService.getByName(name).map(planet -> ResponseEntity.ok(planet))
         .orElseGet(() -> ResponseEntity.notFound().build()); 
     }
-    
-    
+     
 }
