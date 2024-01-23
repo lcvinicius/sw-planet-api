@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.swplanet.domain.Planet;
 import com.example.swplanet.domain.PlanetService;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 @RequestMapping("/planets")
@@ -30,5 +32,12 @@ public class PlanetController {
         return planetService.get(id).map(planet -> ResponseEntity.ok(planet))
         .orElseGet(() -> ResponseEntity.notFound().build());
     }
+    
+    @GetMapping("/name/{name}")
+    public ResponseEntity<Planet> getByName(@PathVariable("name") String name){
+       return planetService.getByName(name).map(planet -> ResponseEntity.ok(planet))
+        .orElseGet(() -> ResponseEntity.notFound().build()); 
+    }
+    
     
 }
