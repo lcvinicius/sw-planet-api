@@ -1,5 +1,7 @@
 package com.example.swplanet.web;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.swplanet.domain.Planet;
 import com.example.swplanet.domain.PlanetService;
 import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 @RestController
@@ -38,5 +41,11 @@ public class PlanetController {
        return planetService.getByName(name).map(planet -> ResponseEntity.ok(planet))
         .orElseGet(() -> ResponseEntity.notFound().build()); 
     }
-     
+    @GetMapping
+    public ResponseEntity<List<Planet>> list(@RequestParam(required = false) String terrain, 
+        @RequestParam(required = false) String climate){
+    List<Planet> planets = planetService.list(terrain, climate);
+    return ResponseEntity.ok(planets);
+
+    }
 }
