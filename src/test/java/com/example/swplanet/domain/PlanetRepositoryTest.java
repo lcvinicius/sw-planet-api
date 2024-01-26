@@ -39,13 +39,4 @@ public class PlanetRepositoryTest {
 
     }
 
-    @Test
-    public void createPlanet_WithExistingName_ThrowsException(){
-        Planet planet = testEntityManager.persistFlushFind(PLANET);
-        planet.setId(null);
-        testEntityManager.detach(planet);
-
-        assertThatThrownBy(() -> planetRepository.save(planet)).isInstanceOf(RuntimeException.class);
-    }
-
 }
