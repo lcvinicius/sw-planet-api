@@ -7,16 +7,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static com.example.swplanet.common.PlanetConstants.PLANET;
 
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.example.swplanet.domain.Planet;
 import com.example.swplanet.domain.PlanetService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 
 @WebMvcTest(PlanetController.class)
 public class PlanetControllerTest {
@@ -30,14 +31,30 @@ public class PlanetControllerTest {
     private PlanetService planetService;
 
     @Test
-    public void createPlanet_WithValidad_ReturnsCreated() throws Exception{
+    public void createPlanet_WithValidData_ReturnsCreated() throws Exception{
         when(planetService.create(PLANET)).thenReturn(PLANET);
         
         mockMvc.perform(post("/planets").content(objectMapper.writeValueAsString(PLANET))
         .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isCreated())
         .andExpect(jsonPath( "$").value(PLANET));
-    
+   
+    }
+    @Test
+    public void createPlanet_WithInvalidData_ReturnsBadRequest() throws Exception{
+        Planet emptyPlanet = new Planet();
+        Planet invalidPlanet = new Planet("", "", "");
+
+        mockMvc.perform(post("/planets").content(objectMapper.writeValueAsString(emptyPlanet))
+        .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isUnprocessableEntity());
+
+        
+        mockMvc.perform(post("/planets").content(objectMapper.writeValueAsString(invalidPlanet))
+        .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isUnprocessableEntity());
+        
+        
     }
     
 }
