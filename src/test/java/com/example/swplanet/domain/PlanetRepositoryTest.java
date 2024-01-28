@@ -122,6 +122,17 @@ public class PlanetRepositoryTest {
       assertThat(response).isEmpty();
 
     }
+   
+    @Test
+    public void removePlanet_WithExistingId_RemovesPlanetFromDatabase() {
+        Planet planet = testEntityManager.persistFlushFind(PLANET);
+
+        planetRepository.deleteById(planet.getId());
+
+        Planet removePlanet = testEntityManager.find(Planet.class, planet.getId());
+        assertThat(removePlanet).isNull();
+
+     }
 
 }
 
