@@ -2,6 +2,7 @@ package com.example.swplanet;
 
 import static  org.assertj.core.api.Assertions.assertThat;
 import static com.example.swplanet.common.PlanetConstants.PLANET;
+import static com.example.swplanet.common.PlanetConstants.TATOOINE;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import com.example.swplanet.domain.Planet;
 
 @ActiveProfiles("it")
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@Sql(scripts = {"/import_planets.sql"}, executionPhase = ExecutionPhase.BEFORE_TEST_METHOD)
 @Sql(scripts = {"/remove_planets.sql"}, executionPhase = ExecutionPhase.AFTER_TEST_METHOD)
 public class PlanetIT {
 
@@ -26,18 +28,23 @@ public class PlanetIT {
 
     @Test
     public void createPlanet_ReturnsCreated(){
-       ResponseEntity<Planet> sut = testRestTemplate.postForEntity("/planets", PLANET,  Planet.class);
+        ResponseEntity<Planet> sut = testRestTemplate.postForEntity("/planets", PLANET,  Planet.class);
     
-       assertThat(sut.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-       assertThat(sut.getBody().getId()).isNotNull();
-       assertThat(sut.getBody().getName()).isEqualTo(PLANET.getName());
-       assertThat(sut.getBody().getClimate()).isEqualTo(PLANET.getClimate());
-       assertThat(sut.getBody().getTerrain()).isEqualTo(PLANET.getTerrain());
-
-        
+        assertThat(sut.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        assertThat(sut.getBody().getId()).isNotNull();
+        assertThat(sut.getBody().getName()).isEqualTo(PLANET.getName());
+        assertThat(sut.getBody().getClimate()).isEqualTo(PLANET.getClimate());
+        assertThat(sut.getBody().getTerrain()).isEqualTo(PLANET.getTerrain());
     
     }
 
+    @Test
+    public void getPlanet_ReturnsPlanet(){
+        ResponseEntity<Planet> sut = testRestTemplate.getForEntity("/planets/1", Planet.class);
     
-  
+        assertThat(sut.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(sut.getBody()).isEqualTo(TATOOINE);
+
+    }
+    
 }
